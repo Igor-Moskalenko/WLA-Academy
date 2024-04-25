@@ -35,7 +35,6 @@ get_header(); ?>
                     echo $myResult;
                     ?>
                 </p>
-
             </div>
 
             <div class="block-two" style="margin-bottom: 20px">
@@ -82,7 +81,6 @@ get_header(); ?>
                     ?>
 
                 </p>
-
             </div>
 
             <div class="block-three">
@@ -142,7 +140,6 @@ get_header(); ?>
                     echo $reversedString;
                     ?>
                 </p>
-
             </div>
 
         </div>
