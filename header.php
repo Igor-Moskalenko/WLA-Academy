@@ -49,7 +49,7 @@
 						<?php wp_nav_menu( array(
 							'theme_location' => 'header-menu',
 							'menu_class'     => 'menu header-menu',
-							'items_wrap'     => '<ul id="%1$s" class="%2$s align-right" data-responsive-menu="accordion medium-dropdown" data-submenu-toggle="true" data-multi-open="false" data-close-on-click-inside="false">%3$s</ul>',
+							'items_wrap'     => '<ul id="%1$s" class="%2$s" data-responsive-menu="accordion medium-dropdown" data-submenu-toggle="true" data-multi-open="false" data-close-on-click-inside="false">%3$s</ul>',
 							'walker'         => new Foundation_Navigation()
 						) ); ?>
 					</nav>
