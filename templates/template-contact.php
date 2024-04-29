@@ -15,6 +15,76 @@ get_header(); ?>
 							<div class="cell medium-6">
 								<h1 class="page-title"><?php the_title(); ?></h1>
 
+                                <!-- Form Task -->
+                                <form action="" method="post">
+                                    <input type="text" name="first_name" placeholder="First Name" required>
+                                    <input type="text" name="last_name" placeholder="Last Name" Name>
+                                    <input type="email" name="email" placeholder="Email" required>
+                                    <input type="hidden" name="post_id"
+                                           value="<?php echo isset($_GET['post_id']) ? $_GET['post_id'] : ''; ?>">
+                                    <select id="subject" name="subject" required>
+                                        <option value="Send only for me">Send only for me</option>
+                                        <option value="Send to admin">Send to admin</option>
+                                     </select><br>
+                                    <textarea name="Message" placeholder="Your message" required cols="50" rows="10"
+                                              style="resize: none;"></textarea>
+                                    <br>
+                                    <button type="submit">Submit</button>
+                                </form>
+
+                                <div id="message-container">
+                                    <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
+                                        <?php if (isset($_POST['first_name']) && isset($_POST['email']) && isset($_POST['subject']) && isset($_POST['Message'])): ?>
+                                            <?php
+
+                                            $first_name = $_POST['first_name'];
+                                            $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
+                                            $email = $_POST['email'];
+                                            $post_id = isset($_POST['post_id']) ? $_POST['post_id'] : '';
+                                            $subject = $_POST['subject'];
+                                            $message = $_POST['Message'];
+
+                                            $full_name = $first_name . ' ' . $last_name;
+                                            $full_message = "From: $full_name\nEmail: $email\nMessage: $message";
+                                            ?>
+                                            <?php
+                                            $recipient_email = '';
+                                            if ($subject === 'Send only for me'):
+                                                $recipient_email = 'igor.m@thewhitelabelagency.com';
+                                            elseif ($subject === 'Send to admin'):
+                                                $recipient_email = 'maindeveloperwp@gmail.com';
+                                            endif;
+                                            ?>
+
+                                            <?php if (!empty($recipient_email)): ?>
+                                                <?php
+                                                $subject_line = "Contact Form Submission - $subject";
+                                                $headers = "From: $email";
+                                                if (mail($recipient_email, $subject_line, $full_message, $headers)):
+                                                    echo "The letter was sent successfully.";
+
+                                                    $args = array(
+                                                        'post_title' => $subject_line,
+                                                        'post_content' => $full_message,
+                                                        'post_status' => 'publish',
+                                                        'post_type' => 'form_submissions'
+                                                    );
+                                                    $submission_id = wp_insert_post($args);
+                                                else:
+                                                    echo "Error sending email.";
+                                                endif;
+                                                ?>
+                                            <?php else: ?>
+                                                The recipient's address is incorrect.
+                                            <?php endif; ?>
+
+                                        <?php else: ?>
+                                            Please fill in all the fields.
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                                <!-- END Form Task-->
+
 								<div class="contact__content">
 									<?php the_content(); ?>
 								</div>
