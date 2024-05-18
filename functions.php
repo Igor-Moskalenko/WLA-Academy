@@ -250,6 +250,16 @@ function foundation_scripts_and_styles()
 		//custom javascript
 		wp_enqueue_script('global', get_template_directory_uri() . '/assets/js/global.js', null, null, true); /* This should go first */
 
+		wp_localize_script(
+			'global',
+			'MYSCRIPT',
+			array(
+				'ajaxUrl' => admin_url('admin-ajax.php'),
+			)
+		);
+		wp_enqueue_style('jquery-ui-css', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/jquery-ui.css');
+		wp_enqueue_script('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array(), '1.12.1', true);
+
 	}
 }
 
@@ -866,78 +876,62 @@ add_filter('wpseo_metabox_prio', 'yoasttobottom');
  */
 add_filter('wp_lazy_loading_enabled', '__return_false');
 
+// ---------------------------------------------------------
+//Ajax actions
+add_action('wp_ajax_date_filter', 'filter_posts');
+add_action('wp_ajax_nopriv_date_filter', 'filter_posts');
+
+function filter_posts()
+{
+	$start_date = $_POST['param1'];
+	$end_date = $_POST['param2'];
+	$paged = !empty($_POST['paged']) ? $_POST['paged'] : 1;
+
+	$args = array(
+		'post_type' => 'events',
+		'posts_per_page' => 3,
+		'paged' => $paged,
+		'post_status' => 'publish',
+		'meta_key' => 'date',
+		'orderby' => 'meta_value',
+		'order' => 'ASC',
+		'meta_query' => array(
+			'relation' => 'AND',
+			array(
+				'key' => 'date',
+				'value' => $start_date,
+				'compare' => '>=',
+				'type' => 'DATE',
+			),
+			array(
+				'key' => 'date',
+				'value' => $end_date,
+				'compare' => '<=',
+				'type' => 'DATE',
+			),
+		),
+	);
+
+	$query = new WP_Query($args);
+	$posts_html = '';
+
+	if ($query->have_posts()) {
+		while ($query->have_posts()) {
+			$query->the_post();
+			ob_start();
+			get_template_part('parts/loop', 'events');
+			$posts_html .= ob_get_clean();
+		}
+	}
+
+	wp_reset_postdata();
+
+	$total_pages = $query->max_num_pages;
+	$has_more_posts = $paged < $total_pages;
+
+	wp_send_json_success(array('posts' => $posts_html, 'has_more' => $has_more_posts));
+
+	wp_die();
+}
 
 /*******************************************************************************/
-
-
-
-//Homework#3
-add_action('gform_after_submission_3', 'custom_registration_process', 10, 2);
-function custom_registration_process($entry, $form)
-{
-	$email = rgar($entry, '6');
-	$password = rgar($entry, '4');
-	$company = rgar($entry, '7');
-
-	$user_exists = email_exists($email);
-
-	if (!$user_exists) {
-		$user_id = wp_create_user($email, $password, $email);
-
-		update_field('company', $company, 'user_' . $user_id);
-
-		$credentials = array(
-			'user_login' => $email,
-			'user_password' => $password,
-			'remember' => true
-		);
-
-		$user = wp_signon($credentials);
-
-		if (is_wp_error($user)) {
-			echo '<p>Login failed: ' . $user->get_error_message() . '</p>';
-		} else {
-			wp_set_current_user($user->ID, $user->user_login);
-			wp_set_auth_cookie($user->ID);
-		}
-	} else {
-		$user = get_user_by('email', $email);
-
-		$credentials = array(
-			'user_login' => $email,
-			'user_password' => $password,
-			'remember' => true
-		);
-
-		$user = wp_signon($credentials);
-
-		if (is_wp_error($user)) {
-			echo '<p>Login failed: ' . $user->get_error_message() . '</p>';
-		} else {
-			wp_set_current_user($user->ID, $user->user_login);
-			wp_set_auth_cookie($user->ID);
-		}
-	}
-}
-
-
-add_shortcode('user_info', 'display_user_info');
-function display_user_info()
-{
-	ob_start();
-
-	$current_user = wp_get_current_user();
-
-	if ($current_user->ID != 0) {
-		$email = $current_user->user_email;
-		$company = get_field('company', 'user_' . $current_user->ID);
-
-		echo '<p>Email: ' . $email . '</p>';
-		echo '<p>Company: ' . $company . '</p>';
-	} else {
-		echo '<p>User is not authorized.</p>';
-	}
-
-	$user_info = ob_get_clean();
-	return $user_info;
-}
