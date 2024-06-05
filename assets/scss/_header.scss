@@ -14,6 +14,80 @@
 	}
 }
 
+.header {
+	background-color: #15263e;
+}
+
+.header-menu.menu .submenu .menu-item-type-taxonomy a {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 0;
+	background-color: #0A1C36;
+	width: 520px;
+}
+
+.menu-item {
+	&__image-wrapper {
+		position: relative;
+		width: 170px;
+		height: 85px;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&-content {
+		display: flex;
+		padding: 0 10px;
+		flex-direction: column;
+	}
+
+	&-description {
+		margin: 0;
+		justify-content: center;
+		font-size: 14px;
+		line-height: 1;
+		color: #fff;
+		font-weight: 400;
+	}
+}
+
+.menu-item-type-taxonomy .menu-item-title {
+	font-size: 24px;
+	font-weight: 400;
+	color: #fff;
+}
+
+.menu-item-type-taxonomy .menu-item-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1;
+	opacity: 0.4;
+}
+
+.header-menu.menu>li:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	width: 6px;
+	height: 3px;
+	background-color: #fff;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.mega-sub-menu {
+	max-width: 520px !important;
+}
+
+
 @include breakpoint(small down) {
 	/* TOP BAR Mobile STYLING */
 
@@ -48,34 +122,48 @@
 
 	.top-bar {
 		display: none;
-		background: $main-color; /* menu list background color */
+		background: $main-color;
+		/* menu list background color */
 	}
 
 	.header-menu {
 		background: transparent;
 
 		li {
-			> a {
-				background: $main-color; /* menu item background color */
-				color: #fff; /* menu item text color */
+			>a {
+				background: $main-color;
+				/* menu item background color */
+				color: #fff;
+				/* menu item text color */
 				line-height: 45px;
 
 				&:focus {
-					&, & + .submenu-toggle {
-						background: darken($main-color, 5); /* menu item background color on hover */
+
+					&,
+					&+.submenu-toggle {
+						background: darken($main-color, 5);
+						/* menu item background color on hover */
 					}
 				}
 			}
 
-			&.current-menu-item, &.current_page_ancestor, &.current_page_parent {
-				> a, .submenu-toggle {
-					background: lighten($main-color, 5); /* current/parent menu item background color */
+			&.current-menu-item,
+			&.current_page_ancestor,
+			&.current_page_parent {
+
+				>a,
+				.submenu-toggle {
+					background: lighten($main-color, 5);
+					/* current/parent menu item background color */
 				}
 			}
 
 			&[aria-expanded='true'] {
-				> a, .submenu-toggle {
-					background: darken($main-color, 3); /* menu item background color on open dropdown */
+
+				>a,
+				.submenu-toggle {
+					background: darken($main-color, 3);
+					/* menu item background color on open dropdown */
 				}
 			}
 		}
@@ -106,38 +194,47 @@
 		// justify-content: flex-end;
 
 		/* Align menu items to the center */
-		// justify-content: center;
+		justify-content: center;
 
 		li {
-			> a {
+			position: relative;
+
+			>a {
 				/* Regular menu item style */
-				line-height: 40px;
-				color: $main-color;
+				line-height: 85px;
+				// color: $main-color;
+				color: #fff;
+				letter-spacing: 3px;
+				text-transform: uppercase;
+				padding: 0 50px;
+				font-weight: 700;
 
 				&:hover {
 					/* menu item style on hover */
-					background: $main-color;
-					color: invert($main-color);
+					// background: $main-color;
+					color: $main-color;
 				}
 			}
 
-			&.current-menu-item, &.current_page_ancestor, &.current_page_parent {
-				> a {
+			&.current-menu-item,
+			&.current_page_ancestor,
+			&.current_page_parent {
+				>a {
 					/* Style of Current page and Ancestor page */
-					background: $main-color;
-					color: invert($main-color);
+					// background: $main-color;
+					color: $main-color;
 				}
 			}
 
 			&.has-dropdown {
-				> a {
+				>a {
 					/* Style of item with dropdown */
 				}
 			}
 
-			&.is-active > a {
+			&.is-active>a {
 				/* Parent link style on dropdown hover */
-				background: invert($main-color);
+				// background: invert($main-color);
 				color: $main-color;
 			}
 		}
@@ -147,13 +244,14 @@
 		.submenu {
 			z-index: 11;
 			display: none;
+			list-style: none;
 
 			&.js-dropdown-active {
 				display: block;
 			}
 
 			li {
-				> a {
+				>a {
 					/* Regular link in dropdown */
 					background: invert($main-color);
 					color: $main-color;
@@ -166,8 +264,10 @@
 					}
 				}
 
-				&.current-menu-item, &.current_page_ancestor, &.current_page_parent {
-					> a {
+				&.current-menu-item,
+				&.current_page_ancestor,
+				&.current_page_parent {
+					>a {
 						background: lighten($main-color, 10);
 						color: #fff;
 					}
