@@ -10,8 +10,8 @@
 		<div class="grid-x grid-margin-x">
 			<div class="cell large-3">
 				<div class="footer__logo">
-					<?php if ( $footer_logo = get_field( 'footer_logo', 'options' ) ):
-						echo wp_get_attachment_image( $footer_logo['id'], 'medium' );
+					<?php if ($footer_logo = get_field('footer_logo', 'options')):
+						echo wp_get_attachment_image($footer_logo['id'], 'medium');
 					else:
 						show_custom_logo();
 					endif; ?>
@@ -19,8 +19,8 @@
 			</div>
 			<div class="cell large-6">
 				<?php
-				if ( has_nav_menu( 'footer-menu' ) ) {
-					wp_nav_menu( array( 'theme_location' => 'footer-menu', 'menu_class' => 'footer-menu', 'depth' => 1 ) );
+				if (has_nav_menu('footer-menu')) {
+					wp_nav_menu(array('theme_location' => 'footer-menu', 'menu_class' => 'footer-menu', 'depth' => 1));
 				}
 				?>
 			</div>
@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<?php if ( $copyright = get_field( 'copyright', 'options' ) ): ?>
+	<?php if ($copyright = get_field('copyright', 'options')): ?>
 		<div class="footer__copy">
 			<div class="grid-container">
 				<div class="grid-x grid-margin-x">
@@ -43,7 +43,8 @@
 	<?php endif; ?>
 </footer>
 <!-- END of footer -->
-
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
 <?php wp_footer(); ?>
 </body>
+
 </html>

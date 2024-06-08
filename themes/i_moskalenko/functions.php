@@ -134,7 +134,8 @@ add_post_type_support('page', 'excerpt');
 register_nav_menus(
 	array(
 		'header-menu' => 'Header Menu',
-		'footer-menu' => 'Footer Menu'
+		'footer-menu' => 'Footer Menu',
+		'header-mega-menu' => 'Header Mega Menu'
 	)
 );
 
@@ -267,7 +268,7 @@ add_action('wp_enqueue_scripts', 'foundation_scripts_and_styles');
 
 add_filter('acf/load_field/type=google_map', function ($field) {
 	$google_map_api = 'https://maps.googleapis.com/maps/api/js';
-	$api_args = array (
+	$api_args = array(
 		'key' => get_theme_mod('google_maps_api') ?: 'AIzaSyBgg23TIs_tBSpNQa8RC0b7fuV4SOVN840',
 		'language' => 'en',
 		'v' => '3.exp'
@@ -318,7 +319,7 @@ add_filter('wbcr/factory/populate_option_resize_larger', 'disabled_image_resize_
 
 // Enable revisions for all custom post types
 add_filter('cptui_user_supports_params', function () {
-	return array ('revisions');
+	return array('revisions');
 });
 
 // Limit number of revisions for all post types
@@ -876,7 +877,6 @@ add_filter('wpseo_metabox_prio', 'yoasttobottom');
  */
 add_filter('wp_lazy_loading_enabled', '__return_false');
 
-// ---------------------------------------------------------
 //Ajax actions
 add_action('wp_ajax_date_filter', 'filter_posts');
 add_action('wp_ajax_nopriv_date_filter', 'filter_posts');
@@ -885,16 +885,11 @@ function filter_posts()
 {
 	$start_date = $_POST['param1'];
 	$end_date = $_POST['param2'];
-	$paged = !empty($_POST['paged']) ? $_POST['paged'] : 1;
 
 	$args = array(
 		'post_type' => 'events',
-		'posts_per_page' => 3,
-		'paged' => $paged,
+		'posts_per_page' => 5,
 		'post_status' => 'publish',
-		'meta_key' => 'date',
-		'orderby' => 'meta_value',
-		'order' => 'ASC',
 		'meta_query' => array(
 			'relation' => 'AND',
 			array(
@@ -913,23 +908,19 @@ function filter_posts()
 	);
 
 	$query = new WP_Query($args);
-	$posts_html = '';
 
 	if ($query->have_posts()) {
 		while ($query->have_posts()) {
 			$query->the_post();
-			ob_start();
-			get_template_part('parts/loop', 'events');
-			$posts_html .= ob_get_clean();
+			get_template_part('parts/loop', 'events'); // Post item
 		}
+		if ($query->post_count < $query->found_posts) {
+			echo '<button id="btn-load-more">Load More</button>';
+		}
+	} else {
+		echo "No events found";
 	}
-
 	wp_reset_postdata();
-
-	$total_pages = $query->max_num_pages;
-	$has_more_posts = $paged < $total_pages;
-
-	wp_send_json_success(array('posts' => $posts_html, 'has_more' => $has_more_posts));
 
 	wp_die();
 }

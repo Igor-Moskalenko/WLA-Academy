@@ -17,7 +17,7 @@ get_header(); ?>
                 <div id="result">
                     <?php $args = array(
                         'post_type' => 'events',
-                        'posts_per_page' => 5,
+                        'posts_per_page' => 3,
                         'paged' => 1,
                         'meta_key' => 'date',
                         'orderby' => 'meta_value',

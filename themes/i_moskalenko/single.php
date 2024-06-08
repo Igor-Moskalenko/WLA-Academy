@@ -35,8 +35,9 @@ get_header(); ?>
 
 
 				<div class="contact__button-wrapper">
+					<?php $post_id = get_the_ID(); ?>
 					<?php if ($link = get_field('link')):
-						$link_url = $link['url'];
+						$link_url = esc_url($link['url'] . '?post_id=' . $post_id);
 						$link_title = $link['title'];
 						$link_target = $link['target'] ? $link['target'] : '_self';
 						?>

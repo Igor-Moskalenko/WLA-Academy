@@ -14,7 +14,8 @@ get_header(); ?>
                 <!--  Task1-->
                 <p class="task-1">
                     <?php
-                    function showPlus10($num) {
+                    function showPlus10($num)
+                    {
                         $result = $num + 10;
                         echo $result;
                     }
@@ -26,7 +27,8 @@ get_header(); ?>
                 <!--  Task2-->
                 <p class="task-2">
                     <?php
-                    function getPlus10($num) {
+                    function getPlus10($num)
+                    {
                         $result = $num + 10;
                         return $result;
                     }
@@ -42,7 +44,8 @@ get_header(); ?>
                 <!--  Task3-->
                 <p class="task-3">
                     <?php
-                    function pythagoras($leg1, $leg2) {
+                    function pythagoras($leg1, $leg2)
+                    {
                         $hypotenuse = sqrt($leg1 ** 2 + $leg2 ** 2);
                         return $hypotenuse;
                     }
@@ -56,7 +59,8 @@ get_header(); ?>
                 <!--  Task4-->
                 <p class="task-4">
                     <?php
-                    function fac($k) {
+                    function fac($k)
+                    {
                         if ($k == 0 || $k == 1) {
                             return 1;
                         } else {
@@ -71,16 +75,33 @@ get_header(); ?>
                 <!--  Task5-->
                 <p class="task-5">
                     <?php
-                    function square($w, $l) {
+                    //function square($w, $l)
+                    {
+                        //$result = $w * $l;
+                        //return $result;
+                    }
+
+                    //$area = square(5, 7);
+                    //echo "Прямоугольник длиной 7 и шириной 5 имеет площадь " . $area;
+                    ?>
+
+                </p>
+
+                <p class="task-5">
+                    <?php
+                    function square($w, $l)
+                    {
                         $result = $w * $l;
                         return $result;
                     }
 
-                    $area = square(5, 7);
-                    echo "Прямоугольник длиной 7 и шириной 5 имеет площадь " . $area;
+                    $width = 5;
+                    $length = 7;
+                    $area = square($width, $length);
+                    echo "Прямоугольник длиной $length и шириной $width имеет площадь $area";
                     ?>
-
                 </p>
+
             </div>
 
             <div class="block-three">
@@ -103,23 +124,29 @@ get_header(); ?>
                 <!--  Task7-->
                 <p class="task-7">
                     <?php
-                    function date_publ_post($datetime)
+                    function time_ago($post_date)
                     {
-                        $time = strtotime($datetime);
-                        $now = time();
-                        $diff = $now - $time;
 
-                        if ($diff < 86400) {
-                            $hours = floor($diff / 3600);
-                            return $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ago';
+                        $now = time();
+
+                        $post_time = strtotime($post_date);
+
+                        $time_diff = $now - $post_time;
+
+                        $days = floor($time_diff / (60 * 60 * 24));
+                        $hours = floor(($time_diff % (60 * 60 * 24)) / (60 * 60));
+
+                        if ($days > 0) {
+                            return $days . " days ago";
+                        } elseif ($hours > 0) {
+                            return $hours . " hours ago";
                         } else {
-                            $days = floor($diff / 86400);
-                            return $days . ' day' . ($days > 1 ? 's' : '') . ' ago';
+                            return "Less than an hour ago";
                         }
                     }
 
                     $post_date = "2024-04-23 15:30:00";
-                    echo date_publ_post($post_date);
+                    echo time_ago($post_date);
                     ?>
                 </p>
 
