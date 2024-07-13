@@ -1,0 +1,114 @@
+@include breakpoint(large) {
+  .footer-beaver {
+    margin-left: 328px;
+  }
+}
+.footer-beaver {
+  &__wrapper{
+  padding: 33px 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  &::after {
+    content: '';
+    background-color: rgba(54, 54, 54, 0.94);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+  }
+    > * {
+      position: relative;
+      z-index: 1;
+    }
+  }
+  &__content {
+    border-bottom: 2px solid #959595;
+    padding-bottom: 40px;
+  }
+  &__copyright {
+    padding-top: 20px;
+  }
+}
+
+.footer-beaver h5 {
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.footer {
+  &__address,
+  &__phone,
+  &__email,
+  &__email-link,
+  &__phone-link {
+    color: #fff;
+    font-size: 17px;
+    line-height: 30px;
+  }
+    &__email-link,
+    &__phone-link {
+      &:hover{
+      opacity: 0.7;
+      color: #fff !important;
+    }
+    }
+  &__copyright,
+  &__designed,
+  &__designed a {
+    color: #d5d5d5;
+  }
+}
+
+.footer__designed p {
+  text-align: right;
+}
+
+.stay-tuned {
+  text-align: right;
+  &__item {
+    vertical-align: middle;
+    margin: 0 8px;
+  }
+  &__link {
+    color: #fff;
+    &:hover {
+      color: #fff;
+      opacity: 0.7;
+    }
+  }
+}
+
+.fa-envelope {
+  font-size: 16px;
+}
+
+.beaver-footer-menu {
+  text-align: center;
+  padding: 50px 0;
+
+  li {
+    display: inline-block;
+    padding: 0 11px;
+    position: relative;
+
+    &:not(:last-child):after {
+      content: '•';
+      padding-left: 15px;
+      font-size: 25px;
+      color: #005696;
+    }
+  }
+
+  a {
+    text-transform: uppercase;
+    font-size: 25px;
+    color: #005696 !important;
+    padding: 0 15px;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}

@@ -1,0 +1,150 @@
+@include breakpoint(large) {
+  .beaver-content {
+    margin-left: 328px !important;
+  }
+}
+ 
+.title-bar {
+  padding: 20px;
+}
+
+body.admin-bar .off-canvas.position-left {
+  top: 32px;
+}
+
+.off-canvas.position-left {
+  width: 328px;
+  background-color: #fff;
+}
+
+.header-beaver .logo {
+  padding: 35px;
+}
+
+.header-beaver {
+  &__title {
+    font-size: 30px;
+    line-height: 25px;
+    color: #ffffff;
+    background-color: #072d49;
+    padding: 15px 35px;
+    margin-bottom: 10px;
+  }
+
+  .stay-tuned {
+    display: flex;
+    margin-bottom: 30px;
+    padding: 0 30px;
+
+    &__item {
+      margin: 8px;
+      position: relative;
+    }
+
+    &__link {
+      color: #ffd204;
+
+      &:hover {
+        color: #ffd204;
+        opacity: 0.7;
+      }
+
+      span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #ffd204;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.beaver-menu {
+  list-style-type: none;
+  margin: 0;
+}
+
+.menu-item-has-children {
+  background-color: #005696;
+  margin-bottom: 8px;
+  padding: 30px;
+
+  > a {
+    font-size: 30px;
+    line-height: 1;
+    color: #ffffff;
+    text-transform: uppercase;
+    position: relative;
+    display: block;
+
+    &::after {
+      content: '\f105';
+      position: absolute;
+      font-weight: 600;
+      font-family: 'FontAwesome';
+      margin-top: 0;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .sub-menu {
+    list-style-type: none;
+
+    .menu-item a {
+      color: #fff;
+      font-size: 20px;
+    }
+  }
+}
+
+.apply-link {
+  background-color: #ffd204;
+  margin: 15px;
+
+  a {
+    display: block;
+    font-size: 25px;
+    line-height: 1;
+    padding: 18px;
+    text-transform: uppercase;
+    color: #fffffe;
+    position: relative;
+
+    &::after {
+      content: '\f105';
+      position: absolute;
+      font-weight: 600;
+      font-family: 'FontAwesome';
+      margin-top: 0;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}
+
+.menu-item-no-children {
+  padding: 0 30px;
+
+  a {
+    font-size: 25px;
+    line-height: 2.2;
+    text-transform: uppercase;
+    color: #005696;
+  }
+}
+
+.beaver-menu .menu-item {
+  transition: all 0.3s ease-in;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+

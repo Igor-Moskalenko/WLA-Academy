@@ -135,7 +135,9 @@ register_nav_menus(
 	array(
 		'header-menu' => 'Header Menu',
 		'footer-menu' => 'Footer Menu',
-		'header-mega-menu' => 'Header Mega Menu'
+		'header-mega-menu' => 'Header Mega Menu',
+        'beaver-footer-menu' => 'Beaver Footer Menu',
+        'beaver-header-menu' => 'Beaver Header Menu',
 	)
 );
 
@@ -261,7 +263,8 @@ function foundation_scripts_and_styles()
 		wp_enqueue_style('jquery-ui-css', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/jquery-ui.css');
 		wp_enqueue_script('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array(), '1.12.1', true);
 
-	}
+        wp_enqueue_script( 'font-awesome', 'https://kit.fontawesome.com/3893c73c07.js');
+    }
 }
 
 add_action('wp_enqueue_scripts', 'foundation_scripts_and_styles');
@@ -457,6 +460,21 @@ if (function_exists('acf_add_options_page')) {
 			'page_title' => 'Theme General Settings',
 			'menu_title' => 'Theme Settings',
 			'menu_slug' => 'theme-general-settings',
+			'capability' => 'edit_posts',
+			'redirect' => false
+		)
+	);
+
+}
+
+// ACF Pro Options Page Beaver
+if (function_exists('acf_add_options_page')) {
+
+	acf_add_options_page(
+		array(
+			'page_title' => 'Beaver Settings',
+			'menu_title' => 'Beaver Settings',
+			'menu_slug' => 'beaver-settings',
 			'capability' => 'edit_posts',
 			'redirect' => false
 		)
@@ -924,5 +942,19 @@ function filter_posts()
 
 	wp_die();
 }
+
+
+//Connecting the module to Beaver Builder
+
+define('BB_MODULE_DIR', get_stylesheet_directory() . '/bb-modules/');
+define('BB_MODULE_URL', get_stylesheet_directory_uri() . '/bb-modules/');
+
+function my_custom_bb_modules() {
+    if (class_exists('FLBuilder')) {
+        require_once BB_MODULE_DIR . 'testimonials-slider/testimonials-slider.php';
+    }
+}
+add_action('init', 'my_custom_bb_modules');
+
 
 /*******************************************************************************/
