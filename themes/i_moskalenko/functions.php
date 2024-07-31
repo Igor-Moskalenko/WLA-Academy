@@ -30,7 +30,7 @@ include_once get_stylesheet_directory() . '/inc/class-lazyload.php';
 // Extend WP Search with Custom fields
 include_once get_stylesheet_directory() . '/inc/custom-fields-search.php';
 // WooCommerce functionality
-//include_once get_stylesheet_directory() . '/inc/woo-custom.php';
+include_once get_stylesheet_directory() . '/inc/woo-custom.php';
 // Include all additional shortcodes
 //include_once get_stylesheet_directory() . '/inc/shortcodes.php';
 // Constants
@@ -136,8 +136,13 @@ register_nav_menus(
 		'header-menu' => 'Header Menu',
 		'footer-menu' => 'Footer Menu',
 		'header-mega-menu' => 'Header Mega Menu',
-        'beaver-footer-menu' => 'Beaver Footer Menu',
-        'beaver-header-menu' => 'Beaver Header Menu',
+		'beaver-footer-menu' => 'Beaver Footer Menu',
+		'beaver-header-menu' => 'Beaver Header Menu',
+		'woocommerce-menu' => 'WooCommerce Menu',
+		'category-menu' => 'Category Menu',
+		'category-options-menu' => 'Category Options Menu',
+		'account-menu' => 'Account Menu',
+		'support-menu' => 'Support Menu',
 	)
 );
 
@@ -178,6 +183,31 @@ function foundation_widgets_init()
 			'id' => 'foundation_sidebar_right',
 			'name' => __('Sidebar Right'),
 			'description' => __('This sidebar is located on the right-hand side of each page.'),
+			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+			'after_widget' => '</aside>',
+			'before_title' => '<h5 class="widget__title">',
+			'after_title' => '</h5>',
+		)
+	);
+	/* Sidebar Left */
+	register_sidebar(
+		array(
+			'id' => 'sidebar_left',
+			'name' => __('Sidebar Left'),
+			'description' => __(''),
+			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+			'after_widget' => '</aside>',
+			'before_title' => '<h5 class="widget__title">',
+			'after_title' => '</h5>',
+		)
+	);
+
+	/* Sidebar Shop */
+	register_sidebar(
+		array(
+			'id' => 'sidebar_shop',
+			'name' => __('Sidebar Shop'),
+			'description' => __(''),
 			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 			'after_widget' => '</aside>',
 			'before_title' => '<h5 class="widget__title">',
@@ -263,8 +293,8 @@ function foundation_scripts_and_styles()
 		wp_enqueue_style('jquery-ui-css', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/jquery-ui.css');
 		wp_enqueue_script('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array(), '1.12.1', true);
 
-        wp_enqueue_script( 'font-awesome', 'https://kit.fontawesome.com/3893c73c07.js');
-    }
+		wp_enqueue_script('font-awesome', 'https://kit.fontawesome.com/3893c73c07.js');
+	}
 }
 
 add_action('wp_enqueue_scripts', 'foundation_scripts_and_styles');
@@ -876,8 +906,24 @@ add_filter('wp_mail_from_name', 'replace_email_sender_name');
 
 function theme_add_woocommerce_support()
 {
-	add_theme_support('woocommerce');
+	add_theme_support(
+		'woocommerce',
+		array(
+			'thumbnail_image_width' => 300,
+			'single_image_width' => 300,
+			'product_grid' => array(
+				'default_rows' => 3,
+				'min_rows' => 2,
+				'max_rows' => 8,
+				'default_columns' => 3,
+				'min_columns' => 2,
+				'max_columns' => 5,
+			),
+		)
+	);
 }
+
+add_action('after_setup_theme', 'theme_add_woocommerce_support');
 
 add_action('after_setup_theme', 'theme_add_woocommerce_support');
 
@@ -943,18 +989,110 @@ function filter_posts()
 	wp_die();
 }
 
-
 //Connecting the module to Beaver Builder
-
 define('BB_MODULE_DIR', get_stylesheet_directory() . '/bb-modules/');
 define('BB_MODULE_URL', get_stylesheet_directory_uri() . '/bb-modules/');
 
-function my_custom_bb_modules() {
-    if (class_exists('FLBuilder')) {
-        require_once BB_MODULE_DIR . 'testimonials-slider/testimonials-slider.php';
-    }
+function my_custom_bb_modules()
+{
+	if (class_exists('FLBuilder')) {
+		require_once BB_MODULE_DIR . 'testimonials-slider/testimonials-slider.php';
+	}
 }
 add_action('init', 'my_custom_bb_modules');
 
+
+if (defined('YITH_WCWL') && !function_exists('yith_wcwl_get_items_count')) {
+	function yith_wcwl_get_items_count()
+	{
+		ob_start();
+		?>
+		<a href="<?php echo esc_url(YITH_WCWL()->get_wishlist_url()); ?>">
+			<span><?php echo esc_html("Wishlist"); ?></span>
+			<span class="yith-wcwl-items-count">
+				(<?php echo esc_html(yith_wcwl_count_all_products()); ?>)
+			</span>
+		</a>
+		<?php
+		return ob_get_clean();
+	}
+
+	add_shortcode('yith_wcwl_items_count', 'yith_wcwl_get_items_count');
+}
+
+
+// Adds a "view all tags" link to the tag cloud widget.
+function add_view_all_tags_link($args)
+{
+	add_filter('wp_tag_cloud', function ($tag_string) {
+		$all_tags_url = home_url('/all-tags/');
+		$view_all_link = '<p><a class="link-all-tags" href="' . esc_url($all_tags_url) . '">' . __('View all tags →', 'moskalenko') . '</a></p>';
+		return $tag_string . $view_all_link;
+	});
+	return $args;
+}
+
+add_filter('widget_tag_cloud_args', 'add_view_all_tags_link');
+
+
+// Adds a filter to the tag cloud widget arguments
+function display_all_product_tags()
+{
+	$tags = get_terms(
+		array(
+			'taxonomy' => 'product_tag',
+			'hide_empty' => false,
+		)
+	);
+
+	if (!empty($tags) && !is_wp_error($tags)) {
+		$html = '<ul>';
+		foreach ($tags as $tag) {
+			$tag_link = get_term_link($tag);
+			$html .= "<li><a href='{$tag_link}'>{$tag->name}</a></li>";
+		}
+		$html .= '</ul>';
+		return $html;
+	} else {
+		return '<p>' . __('No tags found.', 'moskalenko') . '</p>';
+	}
+}
+add_shortcode('all_product_tags', 'display_all_product_tags');
+
+
+
+// Adds a "view all" link to the recent posts widget.
+function add_view_all_posts_link($params)
+{
+	if ($params[0]['widget_name'] === 'Recent Posts') {
+		$all_posts_url = home_url('/blog/');
+		$view_all_link = '<p><a class="link-all-posts" href="' . esc_url($all_posts_url) . '">' . __('View all →', 'moskalenko') . '</a></p>';
+
+		$params[0]['after_widget'] = $view_all_link . $params[0]['after_widget'];
+	}
+
+	return $params;
+}
+
+add_filter('dynamic_sidebar_params', 'add_view_all_posts_link');
+
+// Clears the WooCommerce cart.
+function clear_cart()
+{
+	global $woocommerce;
+	$woocommerce->cart->empty_cart();
+	wp_send_json_success();
+}
+add_action('wp_ajax_clear_cart', 'clear_cart');
+add_action('wp_ajax_nopriv_clear_cart', 'clear_cart');
+
+// Remove Add to cart button
+function remove_add_to_cart_button()
+{
+	if (!is_singular('product')) {
+		remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
+	}
+}
+add_action('wp', 'remove_add_to_cart_button');
 
 /*******************************************************************************/

@@ -83,6 +83,128 @@
 	var scrollOut;
 	$(document).ready(function () {
 
+		$('.attribute-button').on('click', function () {
+			var button = $(this);
+			var attribute = button.data('attribute');
+
+			$('.attribute-button[data-attribute="' + attribute + '"]').removeClass('selected');
+
+			button.addClass('selected');
+		});
+
+		$('#clear-cart-button').on('click', function (event) {
+			event.preventDefault();
+			if (confirm("Empty Cart?")) {
+				$('#clear-cart-form').submit();
+			}
+		});
+
+		//Clear cart
+		$('.cart__clear').on('click', function (e) {
+			e.preventDefault();
+
+			$.ajax({
+				url: MYSCRIPT.ajaxUrl,
+				type: 'post',
+				data: {
+					action: 'clear_cart',
+				},
+				success: function (response) {
+					if (response.success) {
+						location.reload();
+					} else {
+						console.log('Error clearing the cart.');
+					}
+				}
+			});
+		});
+
+		$('.new-products__grid > .products').slick({
+			infinite: true,
+			slidesToShow: 3,
+			slidesToScroll: 1,
+			rows: 2,
+			arrows: true,
+			appendArrows: '.custom-arrows-new',
+			responsive: [
+				{
+					breakpoint: 1024,
+					settings: {
+						rows: 1,
+						slidesToShow: 2,
+					}
+				},
+				{
+					breakpoint: 600,
+					settings: {
+						slidesToShow: 1,
+						rows: 1
+					}
+				}
+			]
+		});
+
+		$('.top-products__grid > .products').slick({
+			infinite: true,
+			slidesToShow: 3,
+			slidesToScroll: 1,
+			arrows: true,
+			appendArrows: '.custom-arrows-top',
+			responsive: [
+				{
+					breakpoint: 1024,
+					settings: {
+						slidesToShow: 2,
+					}
+				},
+				{
+					breakpoint: 600,
+					settings: {
+						slidesToShow: 1,
+					}
+				}
+			]
+		});
+
+		$('.sale-products__grid > .products').slick({
+			infinite: true,
+			slidesToShow: 3,
+			slidesToScroll: 1,
+			arrows: true,
+			appendArrows: '.custom-arrows-sale',
+			responsive: [
+				{
+					breakpoint: 1024,
+					settings: {
+						slidesToShow: 2,
+					}
+				},
+				{
+					breakpoint: 600,
+					settings: {
+						slidesToShow: 1,
+					}
+				}
+			]
+		});
+
+		$('.pwb-brands-cols-outer').slick({
+			arrows: false,
+			dots: false,
+			slidesToShow: 5,
+			slidesToScroll: 1,
+			autoplay: true,
+			autoplaySpeed: 2000,
+		});
+
+
+		$('#scroll-button').on('click', function (e) {
+			e.preventDefault();
+			$('html, body').animate({
+				scrollTop: $('#scroll').offset().top - 30
+			}, 500);
+		});
+
 		//Filter Events   
 		var ajaxUrl = MYSCRIPT.ajaxUrl;
 		$('#btn-filter').click(function (e) {
